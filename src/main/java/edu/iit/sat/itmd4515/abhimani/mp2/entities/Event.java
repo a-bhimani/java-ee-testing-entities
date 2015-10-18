@@ -1,16 +1,14 @@
-package edu.iit.sat.itmd4515.abhimani.mp2.Entities;
+package edu.iit.sat.itmd4515.abhimani.mp2.entities;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.EventState;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -28,20 +26,15 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="event_store")
 @NamedQueries({
-    @NamedQuery(name="Events.retrieveAll", query="SELECT e FROM Events AS e"),
-    @NamedQuery(name="Events.retrieveByDepartment", query="SELECT e FROM Events AS e WHERE e.Dept=:Dept"),
-    @NamedQuery(name="Events.retrieveByVenue", query="SELECT e FROM Events AS e WHERE e.Ven=:Ven"),
-    @NamedQuery(name="Events.findById", query="SELECT e FROM Events AS e WHERE e.PId=:EventId")
+    @NamedQuery(name="Events.retrieveAll", query="SELECT e FROM Event AS e"),
+    @NamedQuery(name="Events.retrieveByDepartment", query="SELECT e FROM Event AS e WHERE e.Dept=:Dept"),
+    @NamedQuery(name="Events.retrieveByVenue", query="SELECT e FROM Event AS e WHERE e.Ven=:Ven"),
+    @NamedQuery(name="Events.findById", query="SELECT e FROM Event AS e WHERE e.PId=:EventId")
 })
-public class Events
-	extends AbstractEntityUnit
-	implements Comparable<Events>{
+public class Event
+	extends SuperEntityUnit
+	implements Comparable<Event>, Serializable{
     //COLUMNS
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="Event_Id", nullable=false)
-    protected int PId;
-
     @Column(name="Title", nullable=false, length=255, unique=true)
     private String Title;
 
@@ -67,29 +60,29 @@ public class Events
     @Column(name="MDate", insertable=false, updatable=true, columnDefinition="TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Date MDate;
 
-    @JoinColumn(name="Event_Dept_Id", referencedColumnName="Dept_Id", nullable=false)
+    @JoinColumn(name="Event_Dept_Id", referencedColumnName="PId", nullable=false)
     @ManyToOne(optional=false)
-    private Departments Dept;
+    private Department Dept;
 
-    @JoinColumn(name="Event_Venue_Id", referencedColumnName="Venue_Id", nullable=false)
+    @JoinColumn(name="Event_Venue_Id", referencedColumnName="PId", nullable=false)
     @ManyToOne(optional=false)
-    private Venues Ven;
+    private Venue Ven;
 
     @ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
     @JoinTable(
 	    name="event_student_attends",
 	    joinColumns={
-		@JoinColumn(name="Event_Id", referencedColumnName="Event_Id")},
+		@JoinColumn(name="Event_Id", referencedColumnName="PId")},
 	    inverseJoinColumns={
-		@JoinColumn(name="Student_Id", referencedColumnName="Student_Id")})
-    private List<Students> lstStudents;
+		@JoinColumn(name="Student_Id", referencedColumnName="PId")})
+    private List<Student> lstStudents;
 
     //CONSTRUCTS
-    public Events(){
-	this.PId=0;
+    public Event(){
+	super();
     }
 
-    public Events(Departments Dept, Venues Ven, String Title, String Description, Date EBegin, Date EEnd, EventState AState){
+    public Event(Department Dept, Venue Ven, String Title, String Description, Date EBegin, Date EEnd, EventState AState){
 	this.Dept=Dept;
 	this.Ven=Ven;
 	this.Title=Title.trim();
@@ -99,7 +92,7 @@ public class Events
 	this.AState=AState;
     }
 
-    public Events(Departments Dept, Venues Ven, String Title, String Description, Date EBegin, Date EEnd){
+    public Event(Department Dept, Venue Ven, String Title, String Description, Date EBegin, Date EEnd){
 	this.Dept=Dept;
 	this.Ven=Ven;
 	this.Title=Title.trim();
@@ -108,7 +101,7 @@ public class Events
 	this.EEnd=EEnd;
     }
 
-    public Events(String Title, String Description, Date EBegin, Date EEnd, EventState AState){
+    public Event(String Title, String Description, Date EBegin, Date EEnd, EventState AState){
 	this.Title=Title.trim();
 	this.Description=Description.trim();
 	this.EBegin=EBegin;
@@ -116,7 +109,7 @@ public class Events
 	this.AState=AState;
     }
 
-    public Events(String Title, String Description, Date EBegin, Date EEnd){
+    public Event(String Title, String Description, Date EBegin, Date EEnd){
 	this.Title=Title.trim();
 	this.Description=Description.trim();
 	this.EBegin=EBegin;
@@ -124,10 +117,6 @@ public class Events
     }
 
     //PROPERTIES
-    public int getPid(){
-	return this.PId;
-    }
-
     public String getTitle(){
 	return Title;
     }
@@ -177,48 +166,43 @@ public class Events
     }
 
     //RELATIONS
-    public Departments getDepartment(){
+    public Department getDepartment(){
 	return Dept;
     }
 
-    public void setDepartment(Departments Dept){
+    public void setDepartment(Department Dept){
 	this.Dept=Dept;
     }
 
-    public Venues getVenue(){
+    public Venue getVenue(){
 	return Ven;
     }
 
-    public void setVenue(Venues Ven){
+    public void setVenue(Venue Ven){
 	this.Ven=Ven;
     }
 
-    public List<Students> getStudentList(){
+    public List<Student> getStudentList(){
 	return lstStudents;
     }
 
-    public void addStudent(Students Stud){
+    public void addStudent(Student Stud){
 	this.lstStudents.add(Stud);
     }
 
     //IMPLEMENTATION
     @Override
-    public int compareTo(Events el){
+    public int compareTo(Event el){
 	return (this.getTitle().compareTo(el.getTitle()));
     }
 
     //OVERRIDES
     @Override
-    public int hashCode(){
-	return ((this.getPid()>0) ? Integer.hashCode(this.getPid()) : 0);
-    }
-
-    @Override
     public boolean equals(Object el){
-	if(!(el instanceof Events))
+	if(!(el instanceof Event))
 	    return false;
 	try{
-	    Events tstEvt=(Events)el;
+	    Event tstEvt=(Event)el;
 	    if(!(Integer.compare(this.hashCode(), tstEvt.hashCode())==0))
 		return false;
 	}catch(Exception ex){

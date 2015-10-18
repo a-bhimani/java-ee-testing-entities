@@ -1,37 +1,32 @@
-package edu.iit.sat.itmd4515.abhimani.mp2.Entities;
+package edu.iit.sat.itmd4515.abhimani.mp2.entities;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
-import edu.iit.sat.itmd4515.abhimani.mp2.Relations.DepartmentOffices;
+import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.relations.DepartmentOffice;
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author Ankit Bhimani (abhimani) on edu.iit.sat.itmd4515.abhimani.mp2
  */
 @Entity
+@Table(name="departments")
 @NamedQueries({
-    @NamedQuery(name="Departments.retrieveAll", query="SELECT d FROM Departments AS d"),
-    @NamedQuery(name="Departments.findById", query="SELECT d FROM Departments AS d WHERE d.PId=:Id"),
-    @NamedQuery(name="Departments.findByName", query="SELECT d FROM Departments AS d WHERE d.Name=:Name")
+    @NamedQuery(name="Departments.retrieveAll", query="SELECT d FROM Department AS d"),
+    @NamedQuery(name="Departments.findById", query="SELECT d FROM Department AS d WHERE d.PId=:Id"),
+    @NamedQuery(name="Departments.findByName", query="SELECT d FROM Department AS d WHERE d.Name=:Name")
 })
-public class Departments
-	extends AbstractEntityUnit
-	implements Comparable<Departments>{
+public class Department
+	extends SuperEntityUnit
+	implements Comparable<Department>, Serializable{
     //COLUMNS
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="Dept_Id", nullable=false)
-    protected int PId;
-
     @Column(name="Dept_Name", nullable=false, length=255, unique=true)
     private String Name;
 
@@ -39,30 +34,26 @@ public class Departments
     private String Description;
 
     @OneToMany(cascade=CascadeType.REMOVE, mappedBy="Dept")
-    private List<DepartmentOffices> lstOffices;
+    private List<DepartmentOffice> lstOffices;
 
     @OneToMany(cascade=CascadeType.PERSIST, mappedBy="Dept")
-    private List<Events> lstEvents;
+    private List<Event> lstEvents;
 
     //CONSTRUCTS
-    public Departments(){
-	this.PId=0;
+    public Department(){
+	super();
     }
 
-    public Departments(String Name, String Description){
+    public Department(String Name, String Description){
 	this.Name=Name.trim();
 	this.Description=Description.trim();
     }
 
-    public Departments(String Name){
+    public Department(String Name){
 	this.Name=Name.trim();
     }
 
     //PROPERTIES
-    public int getPid(){
-	return this.PId;
-    }
-
     public String getName(){
 	return this.Name;
     }
@@ -80,36 +71,31 @@ public class Departments
     }
 
     //RELATIONS
-    public List<DepartmentOffices> getDepartmentOfficesList(){
+    public List<DepartmentOffice> getDepartmentOfficesList(){
 	return lstOffices;
     }
 
-    public void addDepartmentOffice(DepartmentOffices office){
+    public void addDepartmentOffice(DepartmentOffice office){
 	lstOffices.add(office);
     }
 
-    public List<Events> getDepartmentEvents(){
+    public List<Event> getDepartmentEvents(){
 	return lstEvents;
     }
 
     //IMPLEMENTATION
     @Override
-    public int compareTo(Departments el){
+    public int compareTo(Department el){
 	return (this.getName().compareTo(el.getName()));
     }
 
     //OVERRIDES
     @Override
-    public int hashCode(){
-	return ((this.getPid()>0) ? Integer.hashCode(this.getPid()) : 0);
-    }
-
-    @Override
     public boolean equals(Object el){
-	if(!(el instanceof Departments))
+	if(!(el instanceof Department))
 	    return false;
 	try{
-	    Departments tstDept=(Departments)el;
+	    Department tstDept=(Department)el;
 	    if(!(Integer.compare(this.hashCode(), tstDept.hashCode())==0))
 		return false;
 	}catch(Exception ex){

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-    <persistence-unit name="abhimaniPU" transaction-type="RESOURCE_LOCAL">
-	<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-	<class>edu.iit.sat.itmd4515.abhimani.mp2.Entities.Departments</class>
-	<class>edu.iit.sat.itmd4515.abhimani.mp2.Relations.DepartmentOffices</class>
-	<class>edu.iit.sat.itmd4515.abhimani.mp2.Entities.Venues</class>
-	<class>edu.iit.sat.itmd4515.abhimani.mp2.Entities.Students</class>
-	<class>edu.iit.sat.itmd4515.abhimani.mp2.Relations.StudentLogin</class>
-	<class>edu.iit.sat.itmd4515.abhimani.mp2.Entities.Events</class>
-	<validation-mode>NONE</validation-mode>
-	<properties>
-	    <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-	    <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/itmd4515?zeroDateTimeBehavior=convertToNull"/>
-	    <property name="javax.persistence.jdbc.user" value="itmd4515"/>
-	    <property name="javax.persistence.jdbc.password" value="itmd4515"/>
-	    <property name="javax.persistence.schema-generation.database.action" value="create"/>
-	    <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
-	    <property name="javax.persistence.schema-generation.scripts.create-target" value="create.sql"/>
-	    <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop.sql"/>
-	    <property name="eclipselink.logging.timestamp" value="true"/>
-	    <property name="eclipselink.logging.exceptions" value="true"/>
-	    <property name="eclipselink.logging.level" value="OFF"/>
-	    <property name="eclipselink.logging.level.sql" value="FINE"/>
-	    <property name="eclipselink.target-server" value="None"/>
-	</properties>
-    </persistence-unit>
+  <persistence-unit name="abhimaniPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>edu.iit.sat.itmd4515.abhimani.mp2.relations.StudentLogin</class>
+    <class>edu.iit.sat.itmd4515.abhimani.mp2.entities.Department</class>
+    <class>edu.iit.sat.itmd4515.abhimani.mp2.entities.Event</class>
+    <class>edu.iit.sat.itmd4515.abhimani.mp2.entities.Student</class>
+    <class>edu.iit.sat.itmd4515.abhimani.mp2.relations.DepartmentOffice</class>
+    <class>edu.iit.sat.itmd4515.abhimani.mp2.entities.Venue</class>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/itmd4515?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="itmd4515"/>
+      <property name="javax.persistence.jdbc.password" value="itmd4515"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+      <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
+      <property name="javax.persistence.schema-generation.scripts.create-target" value="create.sql"/>
+      <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop.sql"/>
+      <property name="eclipselink.logging.timestamp" value="true"/>
+      <property name="eclipselink.logging.exceptions" value="true"/>
+      <property name="eclipselink.logging.level" value="OFF"/>
+      <property name="eclipselink.logging.level.sql" value="FINE"/>
+      <property name="eclipselink.target-server" value="None"/>
+    </properties>
+  </persistence-unit>
 </persistence>

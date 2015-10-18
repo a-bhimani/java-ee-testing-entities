@@ -1,13 +1,11 @@
-package edu.iit.sat.itmd4515.abhimani.mp2.Relations;
+package edu.iit.sat.itmd4515.abhimani.mp2.relations;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.Country_States;
-import edu.iit.sat.itmd4515.abhimani.mp2.Entities.Departments;
+import edu.iit.sat.itmd4515.abhimani.mp2.entities.Department;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -24,24 +22,19 @@ import javax.validation.constraints.Pattern;
 @Entity
 @Table(name="department_offices")
 @NamedQueries({
-    @NamedQuery(name="DepartmentOffices.retrieveAll", query="SELECT do FROM DepartmentOffices AS do"),
-    @NamedQuery(name="DepartmentOffices.retrieveByDepartment", query="SELECT do FROM DepartmentOffices AS do WHERE do.Dept=:Dept"),
-    @NamedQuery(name="DepartmentOffices.findById", query="SELECT do FROM DepartmentOffices AS do WHERE do.PId=:Id"),
-    @NamedQuery(name="DepartmentOffices.findByTitle", query="SELECT do FROM DepartmentOffices AS do WHERE do.Title=:Name")
+    @NamedQuery(name="DepartmentOffices.retrieveAll", query="SELECT do FROM DepartmentOffice AS do"),
+    @NamedQuery(name="DepartmentOffices.retrieveByDepartment", query="SELECT do FROM DepartmentOffice AS do WHERE do.Dept=:Dept"),
+    @NamedQuery(name="DepartmentOffices.findById", query="SELECT do FROM DepartmentOffice AS do WHERE do.PId=:Id"),
+    @NamedQuery(name="DepartmentOffices.findByTitle", query="SELECT do FROM DepartmentOffice AS do WHERE do.Title=:Name")
 
 })
-public class DepartmentOffices
-	extends AbstractEntityUnit
-	implements Comparable<DepartmentOffices>{
+public class DepartmentOffice
+	extends SuperEntityUnit
+	implements Comparable<DepartmentOffice>, Serializable{
     //COLUMNS
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="Dept_Contact_Id", nullable=false)
-    protected int PId;
-
-    @JoinColumn(name="Office_Dept_Id", referencedColumnName="Dept_Id", nullable=false)
+    @JoinColumn(name="Office_Dept_Id", referencedColumnName="PId", nullable=false)
     @ManyToOne(optional=false)
-    private Departments Dept;
+    private Department Dept;
 
     @Column(name="Title", nullable=false, length=255, unique=true)
     private String Title;
@@ -77,11 +70,11 @@ public class DepartmentOffices
     private String EmailId;
 
     //CONSTRUCTS
-    public DepartmentOffices(){
-	this.PId=0;
+    public DepartmentOffice(){
+	super();
     }
 
-    public DepartmentOffices(String Title, String Addr1, String Addr2, String City, Country_States CState, int Zip, int Zip_Ext, long Phone, String EmailId){
+    public DepartmentOffice(String Title, String Addr1, String Addr2, String City, Country_States CState, int Zip, int Zip_Ext, long Phone, String EmailId){
 	this.Title=Title.trim();
 	this.Addr1=Addr1.trim();
 	this.Addr2=Addr2.trim();
@@ -93,7 +86,7 @@ public class DepartmentOffices
 	this.EmailId=EmailId.trim();
     }
 
-    public DepartmentOffices(String Title, String Addr1, String City, Country_States CState, int Zip, long Phone, String EmailId){
+    public DepartmentOffice(String Title, String Addr1, String City, Country_States CState, int Zip, long Phone, String EmailId){
 	this.Title=Title.trim();
 	this.Addr1=Addr1.trim();
 	this.City=City.trim();
@@ -103,7 +96,7 @@ public class DepartmentOffices
 	this.EmailId=EmailId.trim();
     }
 
-    public DepartmentOffices(Departments Dept, String Title, String Addr1, String Addr2, String City, Country_States CState, int Zip, int Zip_Ext, long Phone, String EmailId){
+    public DepartmentOffice(Department Dept, String Title, String Addr1, String Addr2, String City, Country_States CState, int Zip, int Zip_Ext, long Phone, String EmailId){
 	this.Dept=Dept;
 	this.Title=Title.trim();
 	this.Addr1=Addr1.trim();
@@ -116,7 +109,7 @@ public class DepartmentOffices
 	this.EmailId=EmailId.trim();
     }
 
-    public DepartmentOffices(Departments Dept, String Title, String Addr1, String City, Country_States CState, int Zip, long Phone, String EmailId){
+    public DepartmentOffice(Department Dept, String Title, String Addr1, String City, Country_States CState, int Zip, long Phone, String EmailId){
 	this.Dept=Dept;
 	this.Title=Title.trim();
 	this.Addr1=Addr1.trim();
@@ -128,15 +121,11 @@ public class DepartmentOffices
     }
 
     //PROPERTIES
-    public int getPid(){
-	return this.PId;
-    }
-
-    public Departments getDepartment(){
+    public Department getDepartment(){
 	return Dept;
     }
 
-    public void setDepartment(Departments Dept){
+    public void setDepartment(Department Dept){
 	this.Dept=Dept;
     }
 
@@ -214,22 +203,17 @@ public class DepartmentOffices
 
     //IMPLEMENTATION
     @Override
-    public int compareTo(DepartmentOffices el){
-	return (this.getTitle().compareTo(el.getTitle()));
+    public int compareTo(DepartmentOffice el){
+	return (this.getEmailId().compareTo(el.getEmailId()));
     }
 
     //OVERRIDES
     @Override
-    public int hashCode(){
-	return ((this.getPid()>0) ? Integer.hashCode(this.getPid()) : 0);
-    }
-
-    @Override
     public boolean equals(Object el){
-	if(!(el instanceof DepartmentOffices))
+	if(!(el instanceof DepartmentOffice))
 	    return false;
 	try{
-	    DepartmentOffices tstDeptO=(DepartmentOffices)el;
+	    DepartmentOffice tstDeptO=(DepartmentOffice)el;
 	    if(!(Integer.compare(this.hashCode(), tstDeptO.hashCode())==0))
 		return false;
 	}catch(Exception ex){

@@ -1,9 +1,9 @@
-package edu.iit.sat.itmd4515.abhimani.mp2.TestSubRelations;
+package edu.iit.sat.itmd4515.abhimani.mp2.test_subrelations;
 
 import edu.iit.sat.itmd4515.abhimani.mp2.AbstractTestJUnit;
-import edu.iit.sat.itmd4515.abhimani.mp2.Entities.Departments;
-import edu.iit.sat.itmd4515.abhimani.mp2.Entities.Events;
-import edu.iit.sat.itmd4515.abhimani.mp2.Entities.Students;
+import edu.iit.sat.itmd4515.abhimani.mp2.entities.Department;
+import edu.iit.sat.itmd4515.abhimani.mp2.entities.Event;
+import edu.iit.sat.itmd4515.abhimani.mp2.entities.Student;
 import java.util.List;
 
 /**
@@ -17,21 +17,21 @@ public class Test7_StudentAttendsEvent
     protected void create()
 	    throws Exception{
 	int ix=0;
-	Students s;
-	Events e1;
-	List<Events> evts;
-	s=em.createNamedQuery("Students.findByEmailId", Students.class).setParameter("EmailId", "abhimani@hawk.iit.edu").getSingleResult();
+	Student s;
+	Event e1;
+	List<Event> evts;
+	s=em.createNamedQuery("Students.findByEmailId", Student.class).setParameter("EmailId", "abhimani@hawk.iit.edu").getSingleResult();
 	em.flush();
-	evts=em.createNamedQuery("Events.retrieveByDepartment", Events.class).setParameter("Dept", em.createNamedQuery("Departments.findByName", Departments.class).setParameter("Name", "College of Architecture").getSingleResult()).getResultList();
+	evts=em.createNamedQuery("Events.retrieveByDepartment", Event.class).setParameter("Dept", em.createNamedQuery("Departments.findByName", Department.class).setParameter("Name", "College of Architecture").getSingleResult()).getResultList();
 	em.flush();
-	for(Events e:evts){
+	for(Event e:evts){
 	    s.attendEvent(e);
 	    em.persist(s);
 	    em.flush();
 	    ix++;
 	}
 	System.out.println("\n-->> "+ix+" records inserted.\n");
-	s=em.createNamedQuery("Students.findByEmailId", Students.class).setParameter("EmailId", "spyrison@iit.edu").getSingleResult();
+	s=em.createNamedQuery("Students.findByEmailId", Student.class).setParameter("EmailId", "spyrison@iit.edu").getSingleResult();
 	e1=evts.get(0);
 	e1.addStudent(s);
 	em.persist(e1);
@@ -43,21 +43,21 @@ public class Test7_StudentAttendsEvent
     protected void retrieve()
 	    throws Exception{
 	int ix=0;
-	Students s;
-	Events evt;
-	s=em.createNamedQuery("Students.findByEmailId", Students.class).setParameter("EmailId", "abhimani@hawk.iit.edu").getSingleResult();
-	evt=em.createNamedQuery("Events.retrieveByDepartment", Events.class).setParameter("Dept", em.createNamedQuery("Departments.findByName", Departments.class).setParameter("Name", "College of Architecture").getSingleResult()).getResultList().get(0);
+	Student s;
+	Event evt;
+	s=em.createNamedQuery("Students.findByEmailId", Student.class).setParameter("EmailId", "abhimani@hawk.iit.edu").getSingleResult();
+	evt=em.createNamedQuery("Events.retrieveByDepartment", Event.class).setParameter("Dept", em.createNamedQuery("Departments.findByName", Department.class).setParameter("Name", "College of Architecture").getSingleResult()).getResultList().get(0);
 	em.flush();
 	System.out.println("-------------------------------------------------\n-------------------------------------------------\nGrouped by a Student");
 	System.out.println(s);
-	for(Events e:s.getEventList()){
+	for(Event e:s.getEventList()){
 	    System.out.print(e);
 	    ix++;
 	    System.out.println();
 	}
 	System.out.println("-------------------------------------------------\n-------------------------------------------------\nGrouped by an Event");
 	ix=0;
-	for(Students s1:evt.getStudentList()){
+	for(Student s1:evt.getStudentList()){
 	    System.out.print(s1);
 	    ix++;
 	    System.out.println();
@@ -75,9 +75,9 @@ public class Test7_StudentAttendsEvent
     @Override
     protected void delete()
 	    throws Exception{
-	Students s;
-	Events e;
-	s=em.createNamedQuery("Students.findByEmailId", Students.class).setParameter("EmailId", "abhimani@hawk.iit.edu").getSingleResult();
+	Student s;
+	Event e;
+	s=em.createNamedQuery("Students.findByEmailId", Student.class).setParameter("EmailId", "abhimani@hawk.iit.edu").getSingleResult();
 	em.flush();
 	e=s.getEventList().get(0);
 	s.unAttendEvent(e);

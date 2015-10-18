@@ -1,18 +1,17 @@
-package edu.iit.sat.itmd4515.abhimani.mp2.Entities;
+package edu.iit.sat.itmd4515.abhimani.mp2.entities;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.Venue_Type;
 import edu.iit.sat.itmd4515.abhimani.mp2.Country_States;
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -21,19 +20,15 @@ import javax.validation.constraints.Min;
  * @author Ankit Bhimani (abhimani) on edu.iit.sat.itmd4515.abhimani.mp2
  */
 @Entity
+@Table(name="venues")
 @NamedQueries({
-    @NamedQuery(name="Venues.retrieveAll", query="SELECT v FROM Venues AS v"),
-    @NamedQuery(name="Venues.findByName", query="SELECT v FROM Venues As v WHERE v.Title=:Name")
+    @NamedQuery(name="Venues.retrieveAll", query="SELECT v FROM Venue AS v"),
+    @NamedQuery(name="Venues.findByName", query="SELECT v FROM Venue As v WHERE v.Title=:Name")
 })
-public class Venues
-	extends AbstractEntityUnit
-	implements Comparable<Venues>{
+public class Venue
+	extends SuperEntityUnit
+	implements Comparable<Venue>, Serializable{
     //COLUMNS
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="Venue_Id", nullable=false)
-    private int PId;
-
     @Column(name="Title", nullable=false, length=255, unique=true)
     private String Title;
 
@@ -63,14 +58,14 @@ public class Venues
     private int Zip_Ext=0;
 
     @OneToMany(cascade=CascadeType.PERSIST, mappedBy="Ven")
-    private List<Events> lstEvents;
+    private List<Event> lstEvents;
 
     //CONSTRUCTS
-    public Venues(){
-	this.PId=0;
+    public Venue(){
+	super();
     }
 
-    public Venues(String Title, Venue_Type Type, String Addr1, String Addr2, String City, Country_States CState, int Zip, int Zip_Ext){
+    public Venue(String Title, Venue_Type Type, String Addr1, String Addr2, String City, Country_States CState, int Zip, int Zip_Ext){
 	this.Title=Title.trim();
 	this.Type=Type;
 	this.Addr1=Addr1.trim();
@@ -81,7 +76,7 @@ public class Venues
 	this.Zip_Ext=Zip_Ext;
     }
 
-    public Venues(String Title, Venue_Type Type, String Addr1, String City, Country_States CState, int Zip){
+    public Venue(String Title, Venue_Type Type, String Addr1, String City, Country_States CState, int Zip){
 	this.Title=Title.trim();
 	this.Type=Type;
 	this.Addr1=Addr1.trim();
@@ -91,10 +86,6 @@ public class Venues
     }
 
     //PROPERTIES
-    public int getPid(){
-	return this.PId;
-    }
-
     public String getTitle(){
 	return Title;
     }
@@ -160,28 +151,23 @@ public class Venues
     }
 
     //RELATIONS
-    public List<Events> getVenueEvents(){
+    public List<Event> getVenueEvents(){
 	return lstEvents;
     }
 
     //IMPLEMENTATION
     @Override
-    public int compareTo(Venues el){
+    public int compareTo(Venue el){
 	return (this.getTitle().compareTo(el.getTitle()));
     }
 
     //OVERRIDES
     @Override
-    public int hashCode(){
-	return ((this.getPid()>0) ? Integer.hashCode(this.getPid()) : 0);
-    }
-
-    @Override
     public boolean equals(Object el){
-	if(!(el instanceof Venues))
+	if(!(el instanceof Venue))
 	    return false;
 	try{
-	    Venues tstVenue=(Venues)el;
+	    Venue tstVenue=(Venue)el;
 	    if(!(Integer.compare(this.hashCode(), tstVenue.hashCode())==0))
 		return false;
 	}catch(Exception ex){
