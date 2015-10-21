@@ -1,6 +1,6 @@
 package edu.iit.sat.itmd4515.abhimani.mp2.relations;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.Country_States;
 import edu.iit.sat.itmd4515.abhimani.mp2.entities.Department;
 import java.io.Serializable;
@@ -29,7 +29,7 @@ import javax.validation.constraints.Pattern;
 
 })
 public class DepartmentOffice
-	extends SuperEntityUnit
+	extends AbstractEntityUnit
 	implements Comparable<DepartmentOffice>, Serializable{
     //COLUMNS
     @JoinColumn(name="Office_Dept_Id", referencedColumnName="PId", nullable=false)
@@ -226,7 +226,7 @@ public class DepartmentOffice
     @Override
     public String toString(){
 	try{
-	    return ("/Relations.DepartmentOffices{Id:"+this.getPid()+", Dept_Id:"+this.getDepartment().getPid()+", Department:\""+this.getDepartment().getName()+"\", Title:\""+this.getTitle()+"\", Address:{Addr1:\""+this.getAddr1()+"\", Addr2:\""+((this.getAddr2()==null) ? "" : this.getAddr2())+"\", City:\""+this.getCity()+"\", State:"+this.getCState()+", Zip:"+this.getZip()+"}, Contact:{Phone:"+this.getPhone()+", EmailId:"+this.getEmailId()+"}}");
+	    return ("/Relations.DepartmentOffice{Id:"+this.getPid()+", Dept_Id:"+this.getDepartment().getPid()+", Department:\""+this.getDepartment().getName()+"\", Title:\""+this.getTitle()+"\", Address:{Addr1:\""+this.getAddr1()+"\", Addr2:\""+((this.getAddr2()==null) ? "" : this.getAddr2())+"\", City:\""+this.getCity()+"\", State:"+this.getCState()+", Zip:"+this.getZip()+"}, Contact:{Phone:"+this.getPhone()+", EmailId:"+this.getEmailId()+"}}");
 	}catch(Exception ex){
 	    ex.printStackTrace();
 	    return ex.toString();

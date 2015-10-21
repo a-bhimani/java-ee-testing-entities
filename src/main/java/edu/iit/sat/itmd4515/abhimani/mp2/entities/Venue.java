@@ -1,6 +1,6 @@
 package edu.iit.sat.itmd4515.abhimani.mp2.entities;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.Venue_Type;
 import edu.iit.sat.itmd4515.abhimani.mp2.Country_States;
 import java.io.Serializable;
@@ -26,7 +26,7 @@ import javax.validation.constraints.Min;
     @NamedQuery(name="Venues.findByName", query="SELECT v FROM Venue As v WHERE v.Title=:Name")
 })
 public class Venue
-	extends SuperEntityUnit
+	extends AbstractEntityUnit
 	implements Comparable<Venue>, Serializable{
     //COLUMNS
     @Column(name="Title", nullable=false, length=255, unique=true)
@@ -151,11 +151,17 @@ public class Venue
     }
 
     //RELATIONS
+    /**
+     * To hold a list of events that are held or will be held at the venue.
+    */
     public List<Event> getVenueEvents(){
 	return lstEvents;
     }
 
     //IMPLEMENTATION
+    /**
+     * CompareTo implemented on the Title field which is unique.
+    */
     @Override
     public int compareTo(Venue el){
 	return (this.getTitle().compareTo(el.getTitle()));
@@ -180,7 +186,7 @@ public class Venue
     @Override
     public String toString(){
 	try{
-	    return ("/Entities.Venues{Id:"+this.getPid()+", Title:\""+this.getTitle()+"\", Type:\""+this.getType()+"\", Address:{Addr1:\""+this.getAddr1()+"\", Addr2:\""+((this.getAddr2()==null) ? "" : this.getAddr2())+"\", City:\""+this.getCity()+"\", State:"+this.getCState()+", Zip:"+this.getZip()+"}}");
+	    return ("/Entities.Venue{Id:"+this.getPid()+", Title:\""+this.getTitle()+"\", Type:\""+this.getType()+"\", Address:{Addr1:\""+this.getAddr1()+"\", Addr2:\""+((this.getAddr2()==null) ? "" : this.getAddr2())+"\", City:\""+this.getCity()+"\", State:"+this.getCState()+", Zip:"+this.getZip()+"}}");
 	}catch(Exception ex){
 	    ex.printStackTrace();
 	    return ex.toString();

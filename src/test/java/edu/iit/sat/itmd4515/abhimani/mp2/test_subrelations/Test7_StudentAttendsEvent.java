@@ -5,6 +5,10 @@ import edu.iit.sat.itmd4515.abhimani.mp2.entities.Department;
 import edu.iit.sat.itmd4515.abhimani.mp2.entities.Event;
 import edu.iit.sat.itmd4515.abhimani.mp2.entities.Student;
 import java.util.List;
+import javax.persistence.NoResultException;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -37,6 +41,7 @@ public class Test7_StudentAttendsEvent
 	em.persist(e1);
 	em.flush();
 	System.out.println("\n-->> 1 records inserted.\n");
+	assertTrue(em.createNamedQuery("Events.findById", Event.class).setParameter("EventId", e1.getPid()).getSingleResult().getStudentList().contains(s));
     }
 
     @Override
@@ -52,6 +57,7 @@ public class Test7_StudentAttendsEvent
 	System.out.println(s);
 	for(Event e:s.getEventList()){
 	    System.out.print(e);
+	    assertNotNull(e.toString(), e);
 	    ix++;
 	    System.out.println();
 	}
@@ -59,6 +65,7 @@ public class Test7_StudentAttendsEvent
 	ix=0;
 	for(Student s1:evt.getStudentList()){
 	    System.out.print(s1);
+	    assertNotNull(s.toString(), s);
 	    ix++;
 	    System.out.println();
 	}
@@ -82,7 +89,8 @@ public class Test7_StudentAttendsEvent
 	e=s.getEventList().get(0);
 	s.unAttendEvent(e);
 	em.persist(s);
-	em.flush();
-	System.out.println("\n-->> 1 record deleted : /Entities.Events{Department:\""+e.getDepartment().getName()+"\", Title:\""+e.getTitle()+"\"}\n");
+	forceCommit();
+	System.out.println("\n-->> 1 record deleted : /Entities.Event{Department:\""+e.getDepartment().getName()+"\", Title:\""+e.getTitle()+"\"}\n");
+	throw (new NoResultException());
     }
 }

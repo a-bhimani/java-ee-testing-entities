@@ -1,7 +1,8 @@
 package edu.iit.sat.itmd4515.abhimani.mp2.entities;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.EventState;
+import edu.iit.sat.itmd4515.abhimani.mp2.relations.Comment;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,7 +34,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name="Events.findById", query="SELECT e FROM Event AS e WHERE e.PId=:EventId")
 })
 public class Event
-	extends SuperEntityUnit
+	extends AbstractEntityUnit
 	implements Comparable<Event>, Serializable{
     //COLUMNS
     @Column(name="Title", nullable=false, length=255, unique=true)
@@ -67,6 +69,9 @@ public class Event
     @JoinColumn(name="Event_Venue_Id", referencedColumnName="PId", nullable=false)
     @ManyToOne(optional=false)
     private Venue Ven;
+
+    @OneToMany(cascade=CascadeType.REMOVE, mappedBy="Evt")
+    private List<Comment> lstComments;
 
     @ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
     @JoinTable(
@@ -157,10 +162,16 @@ public class Event
 	this.AState=AState;
     }
 
+    /**
+     * This field is inserted only once automatically upon row creation.
+     */
     public String getCDate(){
 	return CDate.toString();
     }
 
+    /**
+     * This field is updated automatically receives last update date.
+     */
     public String getMDate(){
 	return ((MDate==null) ? "-" : MDate.toString());
     }
@@ -190,7 +201,17 @@ public class Event
 	this.lstStudents.add(Stud);
     }
 
+    /**
+     * Holds a list of comments received for the event.
+     */
+    public List<Comment> getComments(){
+	return lstComments;
+    }
+
     //IMPLEMENTATION
+    /**
+     * CompareTo implemented on the Title field.
+     */
     @Override
     public int compareTo(Event el){
 	return (this.getTitle().compareTo(el.getTitle()));
@@ -215,7 +236,7 @@ public class Event
     @Override
     public String toString(){
 	try{
-	    return ("/Entities.Events{Id:"+this.getPid()+", Dept_Id:\""+this.getDepartment().getPid()+"\", Department:\""+this.getDepartment().getName()+"\", Venue_Id:\""+this.getVenue().getPid()+"\", Venue:\""+this.getVenue().getTitle()+"\", Title:\""+this.getTitle()+"\", Description:{Length:"+((this.getDescription()==null) ? 0 : this.getDescription().length())+"}, EBegin:\""+this.getEBegin()+"\", EEnd:\""+this.getEEnd()+"\", State:"+this.getAState().toUpperCase()+", Create_Date:\""+this.getCDate()+"\", Last_Modified:\""+this.getMDate()+"\"}");
+	    return ("/Entities.Event{Id:"+this.getPid()+", Dept_Id:\""+this.getDepartment().getPid()+"\", Department:\""+this.getDepartment().getName()+"\", Venue_Id:\""+this.getVenue().getPid()+"\", Venue:\""+this.getVenue().getTitle()+"\", Title:\""+this.getTitle()+"\", Description:{Length:"+((this.getDescription()==null) ? 0 : this.getDescription().length())+"}, EBegin:\""+this.getEBegin()+"\", EEnd:\""+this.getEEnd()+"\", Comments:"+this.getComments().size()+", State:"+this.getAState().toUpperCase()+", Create_Date:\""+this.getCDate()+"\", Last_Modified:\""+this.getMDate()+"\"}");
 	}catch(Exception ex){
 	    ex.printStackTrace();
 	    return ex.toString();

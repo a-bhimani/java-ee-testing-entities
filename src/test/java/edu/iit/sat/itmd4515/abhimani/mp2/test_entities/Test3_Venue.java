@@ -6,6 +6,10 @@ import edu.iit.sat.itmd4515.abhimani.mp2.Country_States;
 import edu.iit.sat.itmd4515.abhimani.mp2.entities.Venue;
 import java.util.Collections;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
  *
@@ -27,6 +31,14 @@ public class Test3_Venue
 	em.persist(v4);
 	em.flush();
 	System.out.println("\n-->> 4 records inserted.\n");
+	assertNotNull("/Entities/Venue v1->Id : ", v1.getPid());
+	assertEquals("/Entities/Venue v1->Title : ", v1.getTitle(), "Herman Hall Ballroom");
+	assertNotNull("/Entities/Venue v2->Id : ", v2.getPid());
+	assertEquals("/Entities/Venue v2->Title : ", v2.getTitle(), "Bog");
+	assertNotNull("/Entities/Venue v3->Id : ", v3.getPid());
+	assertEquals("/Entities/Venue v3->Title : ", v3.getTitle(), "McCormick Tribute Campus Center");
+	assertNotNull("/Entities/Venue v4->Id : ", v4.getPid());
+	assertEquals("/Entities/Venue v4->Title : ", v4.getTitle(), "The Wide Open Area");
     }
 
     @Override
@@ -35,8 +47,10 @@ public class Test3_Venue
 	List<Venue> vs;
 	vs=em.createNamedQuery("Venues.retrieveAll", Venue.class).getResultList();
 	Collections.sort(vs);
-	for(Venue v:vs)
+	for(Venue v:vs){
 	    System.out.println(v.toString());
+	    assertNotNull(v.toString(), v);
+	}
 	System.out.println("\n-->> "+vs.size()+" records retrieved.\n");
     }
 
@@ -52,7 +66,10 @@ public class Test3_Venue
 	}
 	em.persist(v);
 	em.flush();
-	System.out.println("\n-->> 1 record updated : /Entities.Venues{Title:\"The BOG\", Type:\"Room\", Addr2:\"-- This is an updated value --\"}\n");
+	System.out.println("\n-->> 1 record updated : /Entities.Venue{Title:\"The BOG\", Type:\"Room\", Addr2:\"-- This is an updated value --\"}\n");
+	assertEquals(v.getTitle(), "The BOG");
+	assertSame(v.getType(), Venue_Type.Room.toString());
+	assertEquals(v.getAddr2(), "-- This is an updated value --");
     }
 
     @Override
@@ -62,6 +79,8 @@ public class Test3_Venue
 	v=em.createNamedQuery("Venues.findByName", Venue.class).setParameter("Name", "The Wide Open Area").getSingleResult();
 	if(v!=null)
 	    em.remove(v);
-	System.out.println("\n-->> 1 record deleted : /Entities.Venues{Title:\"The Wide Open Area\", Type:\"Open\"}\n");
+	forceCommit();
+	System.out.println("\n-->> 1 record deleted : /Entities.Venue{Title:\"The Wide Open Area\", Type:\"Open\"}\n");
+	assertNull(em.createNamedQuery("Venues.findByName", Venue.class).setParameter("Name", "The Wide Open Area").getSingleResult());
     }
 }

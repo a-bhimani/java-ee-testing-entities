@@ -1,6 +1,6 @@
 package edu.iit.sat.itmd4515.abhimani.mp2.entities;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.relations.DepartmentOffice;
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ import javax.persistence.Table;
     @NamedQuery(name="Departments.findByName", query="SELECT d FROM Department AS d WHERE d.Name=:Name")
 })
 public class Department
-	extends SuperEntityUnit
+	extends AbstractEntityUnit
 	implements Comparable<Department>, Serializable{
     //COLUMNS
     @Column(name="Dept_Name", nullable=false, length=255, unique=true)
@@ -71,6 +71,9 @@ public class Department
     }
 
     //RELATIONS
+    /**
+     * Holds a list of offices that belong to the Department.
+     */
     public List<DepartmentOffice> getDepartmentOfficesList(){
 	return lstOffices;
     }
@@ -79,11 +82,17 @@ public class Department
 	lstOffices.add(office);
     }
 
+    /**
+     * Holds a list of events held by the department or will be held.
+     */
     public List<Event> getDepartmentEvents(){
 	return lstEvents;
     }
 
     //IMPLEMENTATION
+    /**
+     * CompareTo implemented on the Name of the Department which is unqiue.
+     */
     @Override
     public int compareTo(Department el){
 	return (this.getName().compareTo(el.getName()));
@@ -108,7 +117,7 @@ public class Department
     @Override
     public String toString(){
 	try{
-	    return ("/Entities.Departments{Id:"+this.getPid()+", Name:\""+this.getName()+"\", Description:{Length:"+((this.getDescription()==null) ? 0 : this.getDescription().length())+"}, Offices:"+this.getDepartmentOfficesList().size()+", Events:"+this.getDepartmentEvents().size()+"}");
+	    return ("/Entities.Department{Id:"+this.getPid()+", Name:\""+this.getName()+"\", Description:{Length:"+((this.getDescription()==null) ? 0 : this.getDescription().length())+"}, Offices:"+this.getDepartmentOfficesList().size()+", Events:"+this.getDepartmentEvents().size()+"}");
 	}catch(Exception ex){
 	    ex.printStackTrace();
 	    return ex.toString();

@@ -4,6 +4,9 @@ import edu.iit.sat.itmd4515.abhimani.mp2.AbstractTestJUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.entities.Department;
 import java.util.Collections;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  *
@@ -27,6 +30,16 @@ public class Test1_Department
 	em.persist(d5);
 	em.flush();
 	System.out.println("\n-->> 5 records inserted.\n");
+	assertNotNull("/Entities/Department d1->Id : ", d1.getPid());
+	assertEquals("/Entities/Department d1->Name : ", d1.getName(), "School of Applied Technology");
+	assertNotNull("/Entities/Department d2->Id : ", d2.getPid());
+	assertEquals("/Entities/Department d2->Name : ", d2.getName(), "Stuart School of Business");
+	assertNotNull("/Entities/Department d3->Id : ", d3.getPid());
+	assertEquals("/Entities/Department d3->Name : ", d3.getName(), "Kent College");
+	assertNotNull("/Entities/Department d4->Id : ", d4.getPid());
+	assertEquals("/Entities/Department d4->Name : ", d4.getName(), "College of Architecture");
+	assertNotNull("/Entities/Department d5->Id : ", d5.getPid());
+	assertEquals("/Entities/Department d5->Name : ", d5.getName(), "Armour College of Engineering");
     }
 
     @Override
@@ -35,8 +48,10 @@ public class Test1_Department
 	List<Department> ds;
 	ds=em.createNamedQuery("Departments.retrieveAll", Department.class).getResultList();
 	Collections.sort(ds);
-	for(Department d:ds)
+	for(Department d:ds){
 	    System.out.println(d.toString());
+	    assertNotNull(d.toString(), d);
+	}
 	System.out.println("\n-->> "+ds.size()+" records retrieved.\n");
     }
 
@@ -51,7 +66,9 @@ public class Test1_Department
 	}
 	em.persist(d);
 	em.flush();
-	System.out.println("\n-->> 1 record updated : /Entities.Departments{Name:\"Kent College of Law\", Description:\"-- This is an updated value --\"}\n");
+	System.out.println("\n-->> 1 record updated : /Entities.Department{Name:\"Kent College of Law\", Description:\"-- This is an updated value --\"}\n");
+	assertEquals(d.getName(), "Kent College of Law");
+	assertEquals(d.getDescription(), "-- This is an updated value --");
     }
 
     @Override
@@ -61,6 +78,8 @@ public class Test1_Department
 	d=em.createNamedQuery("Departments.findByName", Department.class).setParameter("Name", "Stuart School of Business").getSingleResult();
 	if(d!=null)
 	    em.remove(d);
-	System.out.println("\n-->> 1 record deleted : /Entities.Departments{Name:\"Stuart School of Business\"}\n");
+	forceCommit();
+	System.out.println("\n-->> 1 record deleted : /Entities.Department{Name:\"Stuart School of Business\"}\n");
+	assertNull(em.createNamedQuery("Departments.findByName", Department.class).setParameter("Name", "Stuart School of Business").getSingleResult());
     }
 }

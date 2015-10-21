@@ -6,6 +6,10 @@ import edu.iit.sat.itmd4515.abhimani.mp2.entities.Department;
 import edu.iit.sat.itmd4515.abhimani.mp2.relations.DepartmentOffice;
 import java.util.Collections;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
  *
@@ -14,8 +18,8 @@ import java.util.List;
 public class Test2_DepartmentOffice
 	extends AbstractTestJUnit{
     //CRUD - calls
-    private static int UPDATE_ID=0;
-    private static int DELETE_ID=0;
+    private static long UPDATE_ID=0;
+    private static long DELETE_ID=0;
 
     @Override
     protected void create()
@@ -40,6 +44,14 @@ public class Test2_DepartmentOffice
 	UPDATE_ID=do2.getPid();
 	DELETE_ID=do3.getPid();
 	System.out.println("\n-->> 4 records inserted.\n");
+	assertNotNull("/Relations/DepartmentOffice do1->Id : ", do1.getPid());
+	assertEquals("/Relations/DepartmentOffice do1->Title : ", do1.getTitle(), "School of Applied Technology, Main Office");
+	assertNotNull("/Relations/DepartmentOffice do2->Id : ", do2.getPid());
+	assertEquals("/Relations/DepartmentOffice do2->Title : ", do2.getTitle(), "School of Applied Technology, MC");
+	assertNotNull("/Relations/DepartmentOffice do3->Id : ", do3.getPid());
+	assertEquals("/Relations/DepartmentOffice do3->Title : ", do3.getTitle(), "School of Applied Technology, Tech Park South");
+	assertNotNull("/Relations/DepartmentOffice do4->Id : ", do4.getPid());
+	assertEquals("/Relations/DepartmentOffice do4->Title : ", do4.getTitle(), "Chicago-Kent College of Law");
     }
 
     @Override
@@ -56,6 +68,7 @@ public class Test2_DepartmentOffice
 	    Collections.sort(dos);
 	    for(DepartmentOffice d1:dos){
 		System.out.println(d1.toString());
+		assertNotNull(d1.toString(), d1);
 		ix++;
 	    }
 	    System.out.println();
@@ -80,7 +93,12 @@ public class Test2_DepartmentOffice
 	}
 	em.persist(d);
 	em.flush();
-	System.out.println("\n-->> 1 record updated : /Relations.DepartmentOffices{Department:\"School of Applied Technology\", Title:\"School of Applied Technology, Moffet Campus\", Addr1:\"6502 South Archer Road\", Addr2:\"-- This is an updated value --\", City:\"Bedford Park\", State:IL}\n");
+	System.out.println("\n-->> 1 record updated : /Relations.DepartmentOffice{Department:\"School of Applied Technology\", Title:\"School of Applied Technology, Moffet Campus\", Addr1:\"6502 South Archer Road\", Addr2:\"-- This is an updated value --\", City:\"Bedford Park\", State:IL}\n");
+	assertSame(d.getDepartment(), d1);
+	assertEquals(d.getTitle(), "School of Applied Technology, Moffet Campus");
+	assertSame(d.getCState(), Country_States.IL.toString());
+	assertEquals(d.getZip_Ext(), 1957);
+	assertEquals(d.getAddr2(), "-- This is an updated value --");
     }
 
     @Override
@@ -90,6 +108,8 @@ public class Test2_DepartmentOffice
 	d=em.createNamedQuery("DepartmentOffices.findById", DepartmentOffice.class).setParameter("Id", DELETE_ID).getSingleResult();
 	if(d!=null)
 	    em.remove(d);
-	System.out.println("\n-->> 1 record deleted : /Relations.DepartmentOffices{Department:\"School of Applied Technology\", Title:\"School of Applied Technology, Tech Park South\", Addr1:\"4599 US-1 ALT\", City:\"Bladensburg\", State:MD}\n");
+	forceCommit();
+	System.out.println("\n-->> 1 record deleted : /Relations.DepartmentOffice{Department:\"School of Applied Technology\", Title:\"School of Applied Technology, Tech Park South\", Addr1:\"4599 US-1 ALT\", City:\"Bladensburg\", State:MD}\n");
+	assertNull(em.createNamedQuery("DepartmentOffices.findById", DepartmentOffice.class).setParameter("Id", DELETE_ID).getSingleResult());
     }
 }

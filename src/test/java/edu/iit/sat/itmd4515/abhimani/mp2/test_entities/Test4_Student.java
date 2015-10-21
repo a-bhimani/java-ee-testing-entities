@@ -5,6 +5,10 @@ import edu.iit.sat.itmd4515.abhimani.mp2.entities.Student;
 import edu.iit.sat.itmd4515.abhimani.mp2.relations.StudentLogin;
 import java.util.Collections;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -27,8 +31,14 @@ public class Test4_Student
 	em.persist(s1);
 	em.persist(s2);
 	em.persist(s3);
-	//em.flush();
+	em.flush();
 	System.out.println("\n-->> 3 records inserted.\n");
+	assertNotNull("/Entities/Student s1->Id : ", s1.getPid());
+	assertEquals("/Entities/Student s1->EmailId : ", s1.getEmailId(), "abhimani@hawk.iit.edu");
+	assertNotNull("/Entities/Student s2->Id : ", s2.getPid());
+	assertEquals("/Entities/Student s2->EmailId : ", s2.getEmailId(), "spyrison@iit.edu");
+	assertNotNull("/Entities/Student s3->Id : ", s3.getPid());
+	assertEquals("/Entities/Student s3->EmailId : ", s3.getEmailId(), "lea@hawk.iit.edu");
     }
 
     @Override
@@ -37,8 +47,10 @@ public class Test4_Student
 	List<Student> ss;
 	ss=em.createNamedQuery("Students.retrieveAll", Student.class).getResultList();
 	Collections.sort(ss);
-	for(Student s:ss)
+	for(Student s:ss){
 	    System.out.println(s.toString());
+	    assertNotNull(s.toString(), s);
+	}
 	System.out.println("\n-->> "+ss.size()+" records retrieved.\n");
     }
 
@@ -54,7 +66,10 @@ public class Test4_Student
 	}
 	em.persist(s);
 	em.flush();
-	System.out.println("\n-->> 1 record updated : /Entities.Students{Name:{First:\"Scott\", Last:\"Spyrison\"}, Contact:{Phone:0, EmailId:spyrison@iit.edu}, NotifyEvents:true, Special:\"-- This is an updated value --\"}\n");
+	System.out.println("\n-->> 1 record updated : /Entities.Student{Name:{First:\"Scott\", Last:\"Spyrison\"}, Contact:{Phone:0, EmailId:spyrison@iit.edu}, NotifyEvents:true, Special:\"-- This is an updated value --\"}\n");
+	assertEquals(s.getLName(), "Spyrison");
+	assertTrue(s.isNotifyEvents());
+	assertEquals(s.getSpecial(), "-- This is an updated value --");
     }
 
     @Override
@@ -64,6 +79,8 @@ public class Test4_Student
 	s=em.createNamedQuery("Students.findByEmailId", Student.class).setParameter("EmailId", "lea@hawk.iit.edu").getSingleResult();
 	if(s!=null)
 	    em.remove(s);
-	System.out.println("\n-->> 1 record deleted : /Entities.Students{Name:{First:\"Leah\", Last:\"Burrati\"}}\n");
+	forceCommit();
+	System.out.println("\n-->> 1 record deleted : /Entities.Student{Name:{First:\"Leah\", Last:\"Burrati\"}}\n");
+	assertNull(em.createNamedQuery("Students.findByEmailId", Student.class).setParameter("EmailId", "lea@hawk.iit.edu").getSingleResult());
     }
 }

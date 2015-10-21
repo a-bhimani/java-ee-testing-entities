@@ -1,7 +1,6 @@
 package edu.iit.sat.itmd4515.abhimani.mp2.relations;
 
 import edu.iit.sat.itmd4515.abhimani.mp2.EncryptText;
-import edu.iit.sat.itmd4515.abhimani.mp2.entities.Student;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -36,22 +34,23 @@ public class StudentLogin
     @Column(name="enc_pwd")
     private String Password;
 
-    @OneToOne(mappedBy = "auth")
-    private Student stud;
     //CONSTRUCT
-    public StudentLogin(){
+    private StudentLogin(){
 	super();
     }
 
+    /**
+     * You must not initialize and use an instance of this class with the
+     * default constructor, instead use the Student.getAuth() and
+     * Student.setAuth(StudentLogin auth) methods to access or update the
+     * credentials; Use this constructor only to use the matchLogin(String
+     * Password) and authenticate the user.
+     */
     public StudentLogin(String Username){
 	this.Username=Username.trim();
     }
 
     //PROPERTIES
-    public Student getStudentDetails(){
-	return this.stud;
-    }
-
     public String getUsername(){
 	return this.Username;
     }
@@ -60,10 +59,16 @@ public class StudentLogin
 	return Password;
     }
 
+    /**
+     * Password is base64encoded and saved.
+     */
     public void setPassword(String Password){
 	this.Password=EncryptText.base64encode(Password.trim());
     }
 
+    /**
+     * Can be used to authenticate the user.
+     */
     public boolean matchLogin(String Password){
 	return this.getPasswordKey().equals(EncryptText.base64encode(Password));
     }

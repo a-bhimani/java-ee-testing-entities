@@ -1,6 +1,7 @@
 package edu.iit.sat.itmd4515.abhimani.mp2.entities;
 
-import edu.iit.sat.itmd4515.abhimani.mp2.SuperEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.AbstractEntityUnit;
+import edu.iit.sat.itmd4515.abhimani.mp2.relations.Comment;
 import edu.iit.sat.itmd4515.abhimani.mp2.relations.StudentLogin;
 import java.io.Serializable;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
@@ -31,7 +33,7 @@ import javax.validation.constraints.Pattern;
     @NamedQuery(name="Students.findByEmailId", query="SELECT s FROM Student AS s WHERE s.EmailId=:EmailId")
 })
 public class Student
-	extends SuperEntityUnit
+	extends AbstractEntityUnit
 	implements Comparable<Student>, Serializable{
     //COLUMNS
     @Column(name="Student_Number", nullable=false, length=36, unique=true, updatable=false)
@@ -63,6 +65,9 @@ public class Student
     @OneToOne(cascade=CascadeType.PERSIST, optional=false, fetch=FetchType.LAZY, orphanRemoval=false)
     @JoinColumn(name="LoginId", unique=true, nullable=false, updatable=false)
     private StudentLogin auth;
+
+    @OneToMany(cascade=CascadeType.REMOVE, mappedBy="Stud")
+    private List<Comment> lstComments;
 
     @ManyToMany(cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
     @JoinTable(
@@ -101,14 +106,24 @@ public class Student
     }
 
     //PROPERTIES
+    /**
+     * Has 1-1 mapping with the StudentLogin and hold the login credentials.
+     */
     public StudentLogin getAuth(){
 	return this.auth;
     }
 
+    /**
+     * Can be used to update the Student credentials.
+     */
     public void setAuth(StudentLogin auth){
 	this.auth=auth;
     }
 
+    /**
+     * Every Student is assigned a permanent 36-char Unique Id upon creation, the field
+     * not being updatable.
+     */
     public String getStudent_Number(){
 	return Student_Number;
     }
@@ -153,6 +168,9 @@ public class Student
 	this.EmailId=EmailId.trim();
     }
 
+    /**
+     * A flag to hold whether a student can be notified of any event.
+     */
     public boolean isNotifyEvents(){
 	return NotifyEvents;
     }
@@ -165,11 +183,17 @@ public class Student
 	return Special;
     }
 
+    /**
+     * To hold any special note of the student.
+     */
     public void setSpecial(String Special){
 	this.Special=Special.trim();
     }
 
     //RELATIONS
+    /**
+     * Holds a list of events the Student has attended or will attend.
+    */
     public List<Event> getEventList(){
 	return lstEvents;
     }
@@ -182,7 +206,15 @@ public class Student
 	lstEvents.remove(event);
     }
 
+    public List<Comment> getComments(){
+	return lstComments;
+    }
+
     //IMPLEMENTATION
+    /**
+     * CompareTo implemented on the Email Id field which is always unique and
+     * therefore a business rule.
+     */
     @Override
     public int compareTo(Student el){
 	return (this.getEmailId().compareTo(el.getEmailId()));
@@ -207,7 +239,7 @@ public class Student
     @Override
     public String toString(){
 	try{
-	    return ("/Entities.Students{Id:"+this.getPid()+", Number:"+this.getStudent_Number()+", Name:{First:\""+this.getFName()+"\", Last:\""+this.getLName()+"\"}, Contact:{Phone:"+this.getPhone()+", EmailId:"+this.getEmailId()+"}, NotifyEvents:"+Boolean.toString(this.isNotifyEvents())+", Special:{Length:"+((this.getSpecial()==null) ? 0 : this.getSpecial().length())+"}}");
+	    return ("/Entities.Student{Id:"+this.getPid()+", Number:"+this.getStudent_Number()+", Name:{First:\""+this.getFName()+"\", Last:\""+this.getLName()+"\"}, Contact:{Phone:"+this.getPhone()+", EmailId:"+this.getEmailId()+"}, NotifyEvents:"+Boolean.toString(this.isNotifyEvents())+", Special:{Length:"+((this.getSpecial()==null) ? 0 : this.getSpecial().length())+"}, Comments:"+this.getComments().size()+"}");
 	}catch(Exception ex){
 	    ex.printStackTrace();
 	    return ex.toString();

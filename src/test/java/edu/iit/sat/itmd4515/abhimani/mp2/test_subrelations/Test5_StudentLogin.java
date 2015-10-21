@@ -3,6 +3,7 @@ package edu.iit.sat.itmd4515.abhimani.mp2.test_subrelations;
 import edu.iit.sat.itmd4515.abhimani.mp2.AbstractTestJUnit;
 import edu.iit.sat.itmd4515.abhimani.mp2.entities.Student;
 import edu.iit.sat.itmd4515.abhimani.mp2.relations.StudentLogin;
+import javax.persistence.NoResultException;
 
 /**
  *
@@ -51,6 +52,7 @@ public class Test5_StudentLogin
     protected void delete()
 	    throws Exception{
 	//NOTHING TO DO HERE
+	throw (new NoResultException());
 //	Student s=em.createNamedQuery("Student.findByEmailId", Student.class).setParameter("EmailId", "abhimani@hawk.iit.edu").getSingleResult();
 //	if(s.auth!=null)
 //	    em.remove(s.auth);

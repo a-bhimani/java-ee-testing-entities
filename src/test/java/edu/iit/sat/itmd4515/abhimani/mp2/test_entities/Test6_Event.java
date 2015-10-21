@@ -7,6 +7,10 @@ import edu.iit.sat.itmd4515.abhimani.mp2.entities.Venue;
 import edu.iit.sat.itmd4515.abhimani.mp2.EventState;
 import java.util.GregorianCalendar;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
  *
@@ -15,8 +19,8 @@ import java.util.List;
 public class Test6_Event
 	extends AbstractTestJUnit{
     //CRUD - calls
-    private int UPDATE_ID=0;
-    private int DELETE_ID=0;
+    private long UPDATE_ID=0;
+    private long DELETE_ID=0;
 
     @Override
     protected void create()
@@ -49,6 +53,14 @@ public class Test6_Event
 	UPDATE_ID=e4.getPid();
 	DELETE_ID=e2.getPid();
 	System.out.println("\n-->> 4 records inserted.\n");
+	assertNotNull("/Entities/Event e1->Id : ", e1.getPid());
+	assertEquals("/Entities/Event e1->Title : ", e1.getTitle(), "International Student Orientation");
+	assertNotNull("/Entities/Event e2->Id : ", e2.getPid());
+	assertEquals("/Entities/Event e2->Title : ", e2.getTitle(), "ITA Tech Challenge");
+	assertNotNull("/Entities/Event e3->Id : ", e3.getPid());
+	assertEquals("/Entities/Event e3->Title : ", e3.getTitle(), "Fall 2015 Career Fair");
+	assertNotNull("/Entities/Event e4->Id : ", e4.getPid());
+	assertEquals("/Entities/Event e4->Title : ", e4.getTitle(), "Party");
     }
 
     @Override
@@ -67,6 +79,7 @@ public class Test6_Event
 	    es=em.createNamedQuery("Events.retrieveByDepartment", Event.class).setParameter("Dept", d).getResultList();
 	    for(Event evt:es){
 		System.out.println(evt.toString());
+		assertNotNull(evt.toString(), evt);
 		ix++;
 	    }
 	    System.out.println();
@@ -80,6 +93,7 @@ public class Test6_Event
 	    es=em.createNamedQuery("Events.retrieveByVenue", Event.class).setParameter("Ven", v).getResultList();
 	    for(Event evt:es){
 		System.out.println(evt.toString());
+		assertNotNull(evt.toString(), evt);
 		ix++;
 	    }
 	    System.out.println();
@@ -107,7 +121,11 @@ public class Test6_Event
 	}
 	em.persist(e);
 	em.flush();
-	System.out.println("\n-->> 1 record updated : /Entities.Events{Department:\"College of Architecture\", Venue:\"The BOG\", Title:\"Homecoming Bog Party\", Description:\"-- This is an updated value --\", State:ACTIVE}\n");
+	System.out.println("\n-->> 1 record updated : /Entities.Event{Department:\"College of Architecture\", Venue:\"The BOG\", Title:\"Homecoming Bog Party\", Description:\"-- This is an updated value --\", State:ACTIVE}\n");
+	assertSame(e.getDepartment(), d1);
+	assertSame(e.getVenue(), v1);
+	assertEquals(e.getTitle(), "Homecoming Bog Party");
+	assertEquals(e.getDescription(), "-- This is an updated value --");
     }
 
     @Override
@@ -117,6 +135,8 @@ public class Test6_Event
 	e=em.createNamedQuery("Events.findById", Event.class).setParameter("EventId", DELETE_ID).getSingleResult();
 	if(e!=null)
 	    em.remove(e);
-	System.out.println("\n-->> 1 record deleted : /Entities.Events{Department:\"School of Applied Technology\", Venue:\"McCormick Tribute Campus Center\", Title:\"ITA Tech Challenge\", Description:\"In its 6th year, the ITA Tech Challenge is a programming and coding skills competition for students at targeted Midwest universities.\", State:ACTIVE}\n");
+	forceCommit();
+	System.out.println("\n-->> 1 record deleted : /Entities.Event{Department:\"School of Applied Technology\", Venue:\"McCormick Tribute Campus Center\", Title:\"ITA Tech Challenge\", Description:\"In its 6th year, the ITA Tech Challenge is a programming and coding skills competition for students at targeted Midwest universities.\", State:ACTIVE}\n");
+	assertNull(em.createNamedQuery("Events.findById", Event.class).setParameter("EventId", DELETE_ID).getSingleResult());
     }
 }
